@@ -1,0 +1,11 @@
+
+> night-hours@0.0.0 server
+> node server/signaling/index.js
+
+Signaling server running on port 3001
+Client connected: KHHNQgxOjZaobJkBAAAB
+Viewer joined room: game-valorant (1 viewers)
+Client disconnected: KHHNQgxOjZaobJkBAAAB
+Client connected: 9jG-JFSTXv5CgC34AAAD
+Viewer joined room: game-valorant (1 viewers)
+Client disconnected: 9jG-JFSTXv5CgC34AAAD

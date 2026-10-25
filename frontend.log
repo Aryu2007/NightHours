@@ -1,0 +1,14 @@
+
+> night-hours@0.0.0 dev
+> vite
+
+
+  VITE v6.4.3  ready in 63 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+9:33:17 am [vite] (client) page reload index.html
+9:41:24 am [vite] (client) page reload src/App.jsx
+9:48:37 am [vite] (client) page reload src/services/api.js
+10:44:15 am [vite] .env changed, restarting server...
+10:44:15 am [vite] server restarted.

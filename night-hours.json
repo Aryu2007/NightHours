@@ -1,0 +1,71 @@
+{
+  "users": [
+    {
+      "id": 1787643249821,
+      "createdAt": "2026-08-25T07:34:09.821Z",
+      "email": "test@example.com",
+      "passwordHash": "$2a$10$u6OptU5b.o1yHY1khriCQeLu.gMOknMX.0SPOLj6xmOGWRloOCTzC",
+      "name": "TestUser",
+      "avatar": "🌙"
+    },
+    {
+      "id": 1787643481849,
+      "createdAt": "2026-08-25T07:38:01.849Z",
+      "email": "demo@night-hours.com",
+      "passwordHash": "$2a$10$mNBLxbJfSCg7KCjPsWOBPufVlAGl4RTwomhdg3P/pWtXCEcyNpZ3S",
+      "name": "DemoPlayer",
+      "avatar": "🌙"
+    },
+    {
+      "id": 1788153351008,
+      "createdAt": "2026-08-31T05:15:51.008Z",
+      "email": "masteraaryanpanchal@gmail.com",
+      "passwordHash": "$2a$10$QvCbqLIdybwBdPOP3NOiV.AMqTmeUFdiWIQVWaDD1NZGsH9vyoEjW",
+      "name": "gamer",
+      "avatar": "🌙"
+    }
+  ],
+  "gameStats": [
+    {
+      "userId": 1787643249821,
+      "gameKey": "memory",
+      "gamesPlayed": 1,
+      "totalScore": 100,
+      "bestStreak": 3,
+      "highScores": [
+        {
+          "score": 150,
+          "streak": 3,
+          "date": "2026-08-25T07:34:47.105Z"
+        }
+      ]
+    },
+    {
+      "userId": 1787643481849,
+      "gameKey": "memory",
+      "gamesPlayed": 1,
+      "totalScore": 250,
+      "bestStreak": 5,
+      "highScores": [
+        {
+          "score": 300,
+          "streak": 5,
+          "date": "2026-08-25T07:38:15.070Z"
+        }
+      ]
+    }
+  ],
+  "badges": [],
+  "sessionRequests": [
+    {
+      "id": "NH-MT8CSBEF",
+      "userId": 1787643481849,
+      "playerName": "DemoPlayer",
+      "email": "demo@night-hours.com",
+      "game": "Valorant",
+      "note": "Want to try Valorant on cloud",
+      "status": "pending",
+      "createdAt": "2026-08-25T07:38:23.799Z"
+    }
+  ]
+}

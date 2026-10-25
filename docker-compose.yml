@@ -1,0 +1,213 @@
+services:
+  # Android Mobile Cloud VM (for BGMI, Valorant Mobile, Apex Mobile via Browser VNC :6080 + ADB :5555)
+  android-vm:
+    image: budtmo/docker-android:emulator_11.0
+    container_name: nighthours-android-vm
+    privileged: true
+    ports:
+      - "6080:6080"
+      - "5554:5554"
+      - "5555:5555"
+    environment:
+      - EMULATOR_DEVICE=Samsung Galaxy S10
+      - WEB_VNC=true
+      - APPIUM=false
+    volumes:
+      - ./game-servers/android-apks:/root/tmp
+    restart: unless-stopped
+
+  # Game Server Manager - Web UI for managing game servers
+  game-manager:
+    image: ghcr.io/gameservermanagers/linuxgsm-docker:latest
+    container_name: game-manager
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./game-servers:/home/steam/servers
+      - ./config:/home/steam/config
+    environment:
+      - TZ=UTC
+    restart: unless-stopped
+
+  # Valheim Server
+  valheim:
+    image: mbround18/valheim-docker:latest
+    container_name: valheim-server
+    ports:
+      - "2456:2456/udp"
+      - "2457:2457/udp"
+      - "2458:2458/udp"
+    environment:
+      - SERVER_NAME=NightHours-Valheim
+      - SERVER_PASSWORD=changeme
+      - WORLD_NAME=NightHours
+      - TZ=UTC
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - ./game-servers/valheim:/config
+    restart: unless-stopped
+
+  # Minecraft Server (PaperMC - optimized)
+  minecraft:
+    image: itzg/minecraft-server:latest
+    container_name: minecraft-server
+    ports:
+      - "25565:25565"
+      - "25575:25575"
+    environment:
+      - EULA=TRUE
+      - TYPE=PAPER
+      - VERSION=1.21
+      - MEMORY=4G
+      - SERVER_NAME=NightHours-Minecraft
+      - MOTD=Welcome to Night Hours Server
+      - DIFFICULTY=hard
+      - ENABLE_RCON=true
+      - RCON_PASSWORD=changeme
+      - TZ=UTC
+    volumes:
+      - ./game-servers/minecraft:/data
+    restart: unless-stopped
+
+  # Terraria Server
+  terraria:
+    image: vladimirbabichev/terraria:latest
+    container_name: terraria-server
+    ports:
+      - "7777:7777"
+    environment:
+      - WORLD_NAME=NightHours
+      - MAX_PLAYERS=8
+      - PORT=7777
+      - TZ=UTC
+    volumes:
+      - ./game-servers/terraria:/data
+    restart: unless-stopped
+
+  # 7 Days to Die Server
+  7dtd:
+    image: didstopia/7dtd-server:latest
+    container_name: 7dtd-server
+    ports:
+      - "26900:26900/udp"
+      - "26901:26901/udp"
+      - "26902:26902/udp"
+      - "8081:8081"
+    environment:
+      - SERVER_NAME=NightHours-7DTD
+      - SERVER_PASSWORD=changeme
+      - GAME_NAME=NightHours
+      - CONTROL_PANEL_PASSWORD=changeme
+      - TZ=UTC
+    volumes:
+      - ./game-servers/7dtd:/data
+    restart: unless-stopped
+
+  # Counter-Strike 2 Server
+  cs2:
+    image: cm2network/cs2:latest
+    container_name: cs2-server
+    ports:
+      - "27015:27015/udp"
+      - "27015:27015/tcp"
+      - "27020:27020/udp"
+    environment:
+      - SRCDS_GAME_TYPE=0
+      - SRCDS_GAME_MODE=1
+      - SRCDS_MAPGROUP=mg_active
+      - SRCDS_START_MAP=de_dust2
+      - SRCDS_MAXPLAYERS=16
+      - SRCDS_HOSTNAME=NightHours CS2
+      - SRCDS_RCON_PASSWORD=changeme
+      - TZ=UTC
+    volumes:
+      - ./game-servers/cs2:/home/steam/cs2
+    restart: unless-stopped
+
+  # Team Fortress 2 Server
+  tf2:
+    image: cm2network/tf2:latest
+    container_name: tf2-server
+    ports:
+      - "27016:27015/udp"
+      - "27016:27015/tcp"
+    environment:
+      - SRCDS_GAME_TYPE=0
+      - SRCDS_GAME_MODE=1
+      - SRCDS_MAPGROUP=mg_active
+      - SRCDS_START_MAP=pl_badwater
+      - SRCDS_MAXPLAYERS=24
+      - SRCDS_HOSTNAME=NightHours TF2
+      - SRCDS_RCON_PASSWORD=changeme
+      - TZ=UTC
+    volumes:
+      - ./game-servers/tf2:/home/steam/tf2
+    restart: unless-stopped
+
+  # Palworld Server
+  palworld:
+    image: thijsvanloef/palworld-server-docker:latest
+    container_name: palworld-server
+    ports:
+      - "8211:8211/udp"
+      - "8212:8212/udp"
+    environment:
+      - SERVER_NAME=NightHours Palworld
+      - SERVER_PASSWORD=changeme
+      - ADMIN_PASSWORD=changeme
+      - PUBLIC_IP=true
+      - TZ=UTC
+    volumes:
+      - ./game-servers/palworld:/palworld
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+
+  # Monitoring - Portainer for container management
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./portainer:/data
+    restart: unless-stopped
+
+  # Monitoring - Grafana + Prometheus for metrics
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./monitoring/prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3002:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=changeme
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - ./monitoring/grafana-data:/var/lib/grafana
+      - ./monitoring/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+
+networks:
+  default:
+    name: night-hours-gaming
+    driver: bridge
